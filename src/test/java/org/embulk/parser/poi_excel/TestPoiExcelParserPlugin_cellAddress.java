@@ -4,6 +4,7 @@ import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
 
 import java.net.URL;
+import java.nio.file.Paths;
 import java.text.ParseException;
 import java.util.List;
 
@@ -32,6 +33,7 @@ public class TestPoiExcelParserPlugin_cellAddress {
             parser.set("skip_header_lines", 1);
             parser.addColumn("text", "string").set("column_number", "D");
             parser.addColumn("fix_value", "string").set("cell_address", "B1").set("value", "cell_value");
+            parser.addColumn("fix_file", "string").set("cell_address", "B1").set("value", "file_name");
             parser.addColumn("fix_sheet", "string").set("cell_address", "B1").set("value", "sheet_name");
             parser.addColumn("fix_row", "long").set("cell_address", "B1").set("value", "row_number");
             parser.addColumn("fix_col", "long").set("cell_address", "B1").set("value", "column_number");
@@ -44,21 +46,22 @@ public class TestPoiExcelParserPlugin_cellAddress {
             List<OutputRecord> result = tester.runParser(inFile, parser);
 
             assertThat(result.size(), is(7));
-            check1(result, 0, "abc");
-            check1(result, 1, "def");
-            check1(result, 2, "456");
-            check1(result, 3, "abc");
-            check1(result, 4, "abc");
-            check1(result, 5, "true");
-            check1(result, 6, null);
+            check1(result, 0, "abc", excelFile);
+            check1(result, 1, "def", excelFile);
+            check1(result, 2, "456", excelFile);
+            check1(result, 3, "abc", excelFile);
+            check1(result, 4, "abc", excelFile);
+            check1(result, 5, "true", excelFile);
+            check1(result, 6, null, excelFile);
         }
     }
 
-    private void check1(List<OutputRecord> result, int index, String text) {
+    private void check1(List<OutputRecord> result, int index, String text, String excelFile) {
         OutputRecord record = result.get(index);
         // System.out.println(record);
         assertThat(record.getAsString("text"), is(text));
         assertThat(record.getAsString("fix_value"), is("long"));
+        assertThat(getFileName(record.getAsString("fix_file")), is(excelFile));
         assertThat(record.getAsString("fix_sheet"), is("test1"));
         assertThat(record.getAsLong("fix_row"), is(1L));
         assertThat(record.getAsLong("fix_col"), is(2L));
@@ -66,5 +69,9 @@ public class TestPoiExcelParserPlugin_cellAddress {
         assertThat(record.getAsString("other_sheet_name"), is("style"));
         assertThat(record.getAsLong("other_sheet_row"), is(5L));
         assertThat(record.getAsString("other_sheet_col"), is("B"));
+    }
+
+    private static String getFileName(String path) {
+        return Paths.get(path).getFileName().toString();
     }
 }
