@@ -71,7 +71,9 @@ public class PoiExcelColumnBean {
         try {
             this.valueType = PoiExcelColumnValueType.valueOf(type.toUpperCase());
         } catch (Exception e) {
-            throw new ConfigException(MessageFormat.format("illegal value_type={0}", type), e);
+            ConfigException ce = new ConfigException(MessageFormat.format("illegal value_type={0}", type));
+            ce.addSuppressed(e);
+            throw ce;
         }
 
         if (valueType == PoiExcelColumnValueType.CONSTANT) {
@@ -241,7 +243,9 @@ public class PoiExcelColumnBean {
                     return Optional.of(new ErrorStrategy(strategy));
                 }
             } catch (Exception e) {
-                throw new ConfigException(MessageFormat.format("illegal on-error type={0}", value), e);
+                ConfigException ce = new ConfigException(MessageFormat.format("illegal on-error type={0}", value));
+                ce.addSuppressed(e);
+                throw ce;
             }
         }
 
@@ -313,7 +317,9 @@ public class PoiExcelColumnBean {
                 for (SearchMergedCell s : SearchMergedCell.values()) {
                     list.add(s.name().toLowerCase());
                 }
-                throw new ConfigException(MessageFormat.format("illegal search_merged_cell={0}. expected={1}", value, list), e);
+                ConfigException ce = new ConfigException(MessageFormat.format("illegal search_merged_cell={0}. expected={1}", value, list));
+                ce.addSuppressed(e);
+                throw ce;
             }
         }
 
@@ -356,7 +362,9 @@ public class PoiExcelColumnBean {
                 for (FormulaHandling s : FormulaHandling.values()) {
                     list.add(s.name().toLowerCase());
                 }
-                throw new ConfigException(MessageFormat.format("illegal formula_handling={0}. expected={1}", value, list), e);
+                ConfigException ce = new ConfigException(MessageFormat.format("illegal formula_handling={0}. expected={1}", value, list));
+                ce.addSuppressed(e);
+                throw ce;
             }
         }
 

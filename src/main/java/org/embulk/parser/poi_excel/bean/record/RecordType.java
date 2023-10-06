@@ -107,7 +107,9 @@ public enum RecordType {
             for (RecordType s : RecordType.values()) {
                 list.add(s.name().toLowerCase());
             }
-            throw new ConfigException(MessageFormat.format("illegal record_type={0}. expected={1}", value, list), e);
+            ConfigException ce = new ConfigException(MessageFormat.format("illegal record_type={0}. expected={1}", value, list));
+            ce.addSuppressed(e);
+            throw ce;
         }
     }
 }

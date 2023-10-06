@@ -70,7 +70,9 @@ public abstract class CellVisitor {
                 try {
                     doConvertErrorConstant(column, value);
                 } catch (Exception e) {
-                    throw new ConfigException(MessageFormat.format("constant value convert error. value={0}", value), e);
+                    ConfigException ce = new ConfigException(MessageFormat.format("constant value convert error. value={0}", value));
+                    ce.addSuppressed(e);
+                    throw ce;
                 }
             }
             return;
